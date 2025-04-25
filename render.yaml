@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ulvac-troubleshooting
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    region: singapore
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
