@@ -1,0 +1,152 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+form {
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    border-color: #87cefa;
+    outline: none;
+}
+
+button {
+    background-color: #87cefa;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #6ca6cd;
+}
+
+button:active {
+    background-color: #5a92b1;
+}
+
+button:disabled {
+    background-color: #dcdcdc;
+    cursor: not-allowed;
+}
+
+input[type="file"] {
+    border: none;
+    padding: 8px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+}
+
+input[type="file"]:focus {
+    border: 1px solid #87cefa;
+}
+
+.results {
+    margin-top: 30px;
+}
+
+.result {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.result p {
+    font-size: 14px;
+    color: #555;
+}
+
+.result .similarity {
+    font-size: 16px;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.result .image-preview {
+    margin-top: 15px;
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.result .image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    input, textarea, button {
+        padding: 10px;
+    }
+
+    .result {
+        padding: 15px;
+    }
+}
+
+/* 로딩 스피너 스타일 */
+.spinner {
+    display: none;  /* 기본적으로 숨기기 */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.spinner img {
+    width: 50px;  /* 적당한 크기 */
+    height: 50px;
+}
+
+/* 검색 중일 때 스피너 보이게 설정 */
+.spinner.show {
+    display: block;
+}

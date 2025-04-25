@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통계 - ULVAC 트러블슈팅</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>트러블 통계(Trouble統計)</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>장치명(装置名)</th>
+            <th>카테고리(カテゴリー)</th>
+            <th>트러블 발생 횟수</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for stat in stats %}
+        <tr>
+            <td>{{ stat['device_name'] }}</td>
+            <td>{{ stat['category'] or '없음' }}</td>
+            <td>{{ stat['trouble_count'] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top:25px;">
+        <a href="{{ url_for('stats_devices') }}">
+            <button>장치별 카테고리별 비율 보기</button>
+        </a>
+        <a href="{{ url_for('index') }}">
+            <button>메인화면으로 돌아가기</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+cmd창에서 하기 내용 복사하여 Enter누르면 필요한 파일 설치됩니다.
+
+pip install tkinter
+pip install sentence-transformers
+pip install pillow
+pip install pandas
+pip install numpy
+pip install openpyxl
+pip install openpyxl
+pip install scikit-learn
+pip install flask 
+
+python -m pip install --upgrade pip          # 선택: pip 최신화
+python -m pip install matplotlib

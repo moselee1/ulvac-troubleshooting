@@ -1,0 +1,245 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+form {
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    border-color: #87cefa;
+    outline: none;
+}
+
+button {
+    background-color: #87cefa;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #6ca6cd;
+}
+
+button:active {
+    background-color: #5a92b1;
+}
+
+button:disabled {
+    background-color: #dcdcdc;
+    cursor: not-allowed;
+}
+
+input[type="submit"] {
+    background-color: #87cefa;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+input[type="submit"]:hover {
+    background-color: #6ca6cd;
+}
+
+input[type="submit"]:active {
+    background-color: #5a92b1;
+}
+
+input[type="submit"]:disabled {
+    background-color: #dcdcdc;
+    cursor: not-allowed;
+}
+
+input[type="file"] {
+    border: none;
+    padding: 8px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+}
+
+input[type="file"]:focus {
+    border: 1px solid #87cefa;
+}
+
+#paste-container {
+    margin-bottom: 20px;
+}
+
+#paste-area {
+    border: 2px dashed #87cefa;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#paste-area:hover, #paste-area:focus {
+    border-color: #6ca6cd;
+    background-color: #f0f8ff;
+    outline: none;
+}
+
+#image-preview-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+#remove-image {
+    margin-top: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    width: auto;
+    padding: 8px 15px;
+    display: inline-block;
+}
+
+#remove-image:hover {
+    background-color: #e55c5c;
+}
+
+.results {
+    margin-top: 30px;
+}
+
+.result {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.result p {
+    font-size: 14px;
+    color: #555;
+}
+
+.result .similarity {
+    font-size: 16px;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.result .image-preview {
+    margin-top: 15px;
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.result .image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    input, textarea, button {
+        padding: 10px;
+    }
+
+    .result {
+        padding: 15px;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+th {
+    background-color: #87cefa;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+/* 팝업 이미지 스타일 */
+#fullImage {
+    z-index: 9999;
+    flex-direction: column; /* 세로 정렬 */
+}
+
+#popupImage {
+    max-width: 90%;
+    max-height: 80%; /* 버튼 공간 확보 */
+}
+
+#closeImage {
+    margin-top: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 5px 10px; /* 크기 축소 */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* 텍스트 크기 축소 */
+}
+
+#closeImage:hover {
+    background-color: #e55c5c;
+}
