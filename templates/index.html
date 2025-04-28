@@ -11,298 +11,42 @@
         <h1>ULVAC Trouble Shooting Program</h1>
 
         <!-- 트러블 등록 폼 -->
-        <form method="POST" action="/" id="troubleForm" enctype="multipart/form-data">
-            <label for="trouble_date">발생일(発生日)</label>
-            <input type="date" id="trouble_date" name="trouble_date" required>
-            <label for="device_code">장치 지번(装置指番)</label>
-            <input type="text" id="device_code" name="device_code" placeholder="예) ME24-4504-0" required>
-            <label for="device_name_select">장치명(装置名)</label>
-            <select id="device_name_select" name="device_name_select" onchange="toggleDeviceNameInput()">
-                <option value="RDL">RDL</option>
-                <option value="ARC">ARC</option>
-                <option value="AFFL">AFFL</option>
-                <option value="MHM">MHM</option>
-                <option value="Curk">Curk</option>
-                <option value="ULPIN">ULPIN</option>
-                <option value="PLATE-W">PLATE-W</option>
-                <option value="GATE-W">GATE-W</option>
-                <option value="Cu">Cu</option>
-                <option value="공통(共通)">공통(共通)</option>
-                <option value="직접입력">직접입력(直接入力)</option>
-            </select>
-            <input type="text" id="device_name" name="device_name" style="display:none;" placeholder="장치명을 입력하세요(装置名を入力してください)">
-            <label for="user_name">성명(報告者)</label>
-            <input type="text" id="user_name" name="user_name" required>
-            <label for="trouble_text">트러블 증상(Trouble内容)</label>
-            <textarea id="trouble_text" name="trouble_text" rows="2" placeholder="※영문 명칭은 영어로 적기!! 예)셔터 드라이버 → Shutter Driver
-※英語の名称は英語で書くこと!! 例)シャッタードライバー → Shutter Driver" required></textarea>
+        <form method="POST" action="/submit" id="troubleForm" enctype="multipart/form-data">
+            <label for="occur_date">발생일(発生日)</label>
+            <input type="date" id="occur_date" name="occur_date" required>
+
+            <label for="device_local">장치 지번(装置指番)</label>
+            <input type="text" id="device_local" name="device_local" placeholder="예) ME24-4504-0" required>
+
+            <label for="device_name">장치명(装置名)</label>
+            <input type="text" id="device_name" name="device_name" placeholder="장치명을 입력하세요" required>
+
+            <label for="reporter_name">성명(報告者)</label>
+            <input type="text" id="reporter_name" name="reporter_name" required>
+
+            <label for="trouble_content">트러블 증상(Trouble内容)</label>
+            <textarea id="trouble_content" name="trouble_content" rows="2" required></textarea>
+
             <label for="solution">해결 방법(解決方法)</label>
             <textarea id="solution" name="solution" rows="2" required></textarea>
+
             <label for="category">카테고리(カテゴリー)</label>
-            <select id="category" name="category">
-                <option value="">선택 안 함(未選択)</option>
-                <option value="전원 또는 제품 불량(電源又は製品不良)">전원 또는 제품 불량(電源又は製品不良)</option>
-                <option value="케이블 배선 불량(Cable配線不良)">케이블 배선 불량(Cable配線不良)</option>
-                <option value="조립 불량(組立不良)">조립 불량(組立不良)</option>
-                <option value="전기설계 부적합(電気設計の不具合)">전기설계 부적합(電気設計の不具合)</option>
-                <option value="기계설계 부적합(機械設計の不具合)">기계설계 부적합(機械設計の不具合)</option>
-                <option value="소프트 부적합(Softの不具合)">소프트 부적합(Softの不具合)</option>
-                <option value="작업자 미인식(作業者の未認識)">작업자 미인식(作業者の未認識)</option>
-                <option value="기타(その他)">기타(その他)</option>
-            </select>
-            <label for="tags">해쉬태그 (쉼표로 구분)　 ハッシュタグ (コンマで区分)</label>
-            <input type="text" id="tags" name="tags" placeholder="예) DC전원, 단선, Magnet Driver 　例) DC電源, Magnet Drivere">
-            <label for="image">사진 첨부(휴대폰용) 写真添付(携帯用)</label>
-            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" onchange="checkFile(this)">
-            
-            <div id="paste-container">
-                <label>사진 첨부(노트북용) 写真添付(パソコン用)  ※Cannot upload images over 2mb, use clipboard capture</label>
-                <div id="paste-area" tabindex="0">Window key+shift+S로 캡쳐 후, Ctrl+V로 사진첨부　　　　　　　　　　　　　　　　　　　　　　　(Window key+shift+Sで Capture後、Ctrl+Vで 写真添付)</div>
-                <div id="image-preview-container" style="display:none;">
-                    <img id="image-preview" src="" alt="미리보기" style="max-width:100%; max-height:200px; margin-top:10px;">
-                    <button type="button" id="remove-image" onclick="removeClipboardImage()">이미지 제거(画像削除)</button>
-                </div>
-                <input type="hidden" id="clipboard-image-data" name="clipboard_image_data">
-            </div>
-            <input type="submit" value="등록(登録)">
+            <input type="text" id="category" name="category">
+
+            <label for="mobile_img">모바일용 사진첨부(携帯用)</label>
+            <input type="text" id="mobile_img" name="mobile_img">
+
+            <label for="pc_img">노트북용 사진첨부(パソコン用)</label>
+            <input type="text" id="pc_img" name="pc_img">
+
+            <label for="hashtag">해시태그(コンマで区分)</label>
+            <input type="text" id="hashtag" name="hashtag">
+
+            <input type="submit" value="등록">
         </form>
 
-    <!-- 통계 페이지 링크 -->
-    <a href="{{ url_for('stats') }}"><button>트러블 통계 보기(Trouble統計を見る)</button></a>
-
-    <!-- 관리자 기능 -->
-    <div>
-        <label for="adminPassword">관리자 패스워드(管理者Password)</label>
-        <input type="password" id="adminPassword" name="adminPassword" oninput="checkPassword()">
+        <a href="{{ url_for('stats') }}"><button>트러블 통계 보기</button></a>
+        <a href="{{ url_for('stats_devices') }}"><button>장비별 트러블 통계 보기</button></a>
     </div>
-    <form action="/export" method="get">
-        <button id="exportButton" type="submit" disabled>DB Data → Excel Data Download</button>
-    </form>
-    <form action="/import" method="post" enctype="multipart/form-data">
-        <label for="file">Excel 파일 업로드(Excel file upload)</label>
-        <input type="file" name="file" id="file" accept=".xlsx">
-        <button id="importButton" type="submit" disabled>Excel Data → DB Data Upload</button>
-    </form>
-
-        <!-- 검색 폼 -->
-        <form method="POST" action="/">
-            <label for="search_query">트러블 검색(Trouble検索)</label>
-            <input type="text" id="search_query" name="search_query" placeholder="트러블 증상명 검색(Trouble内容を検索)">
-            <label for="search_tags">해쉬태그 (쉼표로 구분)　 ハッシュタグ (コンマで区分)</label>
-            <input type="text" id="search_tags" name="search_tags" placeholder="예: DC전원 　例) DC電源">
-            <button type="submit">검색(検索)</button>
-        </form>
-
-        <!-- 검색 결과 -->
-        {% if results %}
-        <div class="results">
-            <h3>검색 결과 (유사도 30% 이상만 표시) 　検索結果(類似度30%以上のみ表紙)</h3>
-            {% for result, similarity, useful_count, comments in results %}
-            <div class="result">
-                <p><strong>유사도(類似度): {{ similarity*100|round(2) }}%</strong></p>
-                <p><strong>장치명(装置名):</strong> {{ result['device_name'] }}</p>
-                <p><strong>장치지번(装置指番):</strong> {{ result['device_code'] }}</p>
-                <p><strong>성명(報告者):</strong> {{ result['user_name'] }}</p>
-                <p><strong>증상(内容):</strong> {{ result['trouble_text'] }}</p>
-                <p><strong>해결 방법(解決方法):</strong> {{ result['solution'] }}</p>
-                <p><strong>날짜(発生日):</strong> {{ result['trouble_date'] }}</p>
-                <p><strong>카테고리(カテゴリー):</strong> {{ result['category'] or '없음(無し)' }}</p>
-                <p><strong>해쉬태그(ハッシュタグ):</strong> {{ result['tags'] or '없음(無し)' }}</p>
-                {% if result['image'] %}
-                <button onclick="openImage('{{ url_for('static', filename='uploads/' + result['image']) }}')">이미지 열기(imageを開く)</button>
-                {% endif %}
-                <form action="{{ url_for('feedback', tid=result['id']) }}" method="post">
-                    <button type="submit">좋아요(良いね) Up!</button>
-                </form>
-                <p><strong>피드백 상태(Feedback状態):</strong> 좋아요良いね({{ useful_count }})</p>
-                {% if comments %}
-                <p><strong>코멘트:</strong></p>
-                {% for comment in comments %}
-                <p>{{ comment['commenter_name'] }}: {{ comment['comment'] }}</p>
-                {% endfor %}
-                {% endif %}
-                <form method="POST" action="/">
-                    <input type="hidden" name="trouble_id" value="{{ result['id'] }}">
-                    <label for="commenter_name_{{ result['id'] }}">성명(名前):</label>
-                    <input type="text" id="commenter_name_{{ result['id'] }}" name="commenter_name" required>
-                    <label for="comment_{{ result['id'] }}">코멘트(コメント):</label>
-                    <textarea id="comment_{{ result['id'] }}" name="comment" rows="2" required></textarea>
-                    <button type="submit">코멘트 추가(コメント追加)</button>
-                </form>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- 이미지 팝업 -->
-    <div id="fullImage" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; flex-direction:column;">
-        <img id="popupImage" src="" alt="이미지" style="max-width:90%; max-height:80%;">
-        <button id="closeImage" onclick="closeImage()" style="margin-top:10px; background:#ff6b6b; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">이미지 닫기(画像閉じる)</button>
-    </div>
-
-    <script>
-        function openImage(src) {
-            if (src) {
-                document.getElementById('popupImage').src = src;
-                document.getElementById('fullImage').style.display = 'flex';
-            }
-        }
-
-        function closeImage() {
-            document.getElementById('fullImage').style.display = 'none';
-            document.getElementById('popupImage').src = ''; // 이미지 초기화
-        }
-
-        function checkPassword() {
-            const passwordInput = document.getElementById('adminPassword').value;
-            const exportButton = document.getElementById('exportButton');
-            const importButton = document.getElementById('importButton');
-            const correctPassword = "8797";
-            exportButton.disabled = passwordInput !== correctPassword;
-            importButton.disabled = passwordInput !== correctPassword;
-        }
-
-        function checkFile(input) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                console.log("File selected:", file.name, "Size:", file.size, "bytes");
-                if (file.size > 20 * 1024 * 1024) {  // 20MB 제한
-                    alert("파일 크기가 20MB를 초과했습니다(fileが20MBを超えました)");
-                    input.value = "";
-                }
-                removeClipboardImage();
-            } else {
-                console.log("No file selected");
-            }
-        }
-
-        function toggleDeviceNameInput() {
-            const select = document.getElementById('device_name_select');
-            const input = document.getElementById('device_name');
-            console.log("Selected value:", select.value);
-            if (select.value === '직접입력') {
-                input.style.display = 'block';
-                input.required = true;
-            } else {
-                input.style.display = 'none';
-                input.required = false;
-            }
-        }
-
-        // 이미지 압축 함수
-        function compressImage(blob, maxSizeMB, callback) {
-            const img = new Image();
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-                img.src = event.target.result;
-            };
-
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                let width = img.width;
-                let height = img.height;
-                const maxBytes = maxSizeMB * 1024 * 1024;
-
-                if (blob.size > maxBytes) {
-                    const scale = Math.sqrt(maxBytes / blob.size) * 0.9;
-                    width = Math.floor(width * scale);
-                    height = Math.floor(height * scale);
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-
-                let quality = 0.9;
-                let dataUrl;
-                do {
-                    dataUrl = canvas.toDataURL('image/jpeg', quality);
-                    quality -= 0.1;
-                } while (dataUrl.length > maxBytes && quality > 0.1);
-
-                callback(dataUrl);
-            };
-
-            reader.readAsDataURL(blob);
-        }
-
-        // 클립보드 이미지 붙여넣기 관련 함수
-        document.addEventListener('DOMContentLoaded', function() {
-            const pasteArea = document.getElementById('paste-area');
-            const imagePreviewContainer = document.getElementById('image-preview-container');
-            const imagePreview = document.getElementById('image-preview');
-            const clipboardImageData = document.getElementById('clipboard-image-data');
-            const fileInput = document.getElementById('image');
-
-            pasteArea.addEventListener('click', function() {
-                pasteArea.focus();
-            });
-
-            document.addEventListener('paste', function(e) {
-                handlePaste(e);
-            });
-
-            pasteArea.addEventListener('paste', function(e) {
-                handlePaste(e);
-            });
-
-            function handlePaste(e) {
-                if (fileInput.files && fileInput.files.length > 0) {
-                    if (!confirm("이미 파일이 선택되어 있습니다. 클립보드 이미지로 대체하시겠습니까?\n既にファイルが選択されています。クリップボード画像に置き換えますか？")) {
-                        return;
-                    }
-                    fileInput.value = "";
-                }
-
-                const items = e.clipboardData.items;
-                let imageItem = null;
-
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf('image') !== -1) {
-                        imageItem = items[i];
-                        break;
-                    }
-                }
-
-                if (imageItem) {
-                    e.preventDefault();
-                    const blob = imageItem.getAsFile();
-
-                    if (blob.size > 20 * 1024 * 1024) {  // 20MB 제한
-                        alert("클립보드 이미지가 20MB를 초과했습니다. 더 작은 이미지를 사용해주세요.\nクリップボード画像が20MBを超えました。より小さい画像を使用してください。");
-                        return;
-                    }
-
-                    compressImage(blob, 20, function(compressedDataUrl) {
-                        imagePreview.src = compressedDataUrl;
-                        imagePreviewContainer.style.display = 'block';
-                        clipboardImageData.value = compressedDataUrl;
-                        pasteArea.innerHTML = '이미지가 붙여넣어졌습니다 (画像が貼り付けられました)';
-                        pasteArea.style.color = '#4caf50';
-                        console.log("Clipboard image compressed and pasted successfully, size:", blob.size, "bytes");
-                    });
-                } else {
-                    console.log("No image found in clipboard");
-                }
-            }
-        });
-
-        function removeClipboardImage() {
-            const pasteArea = document.getElementById('paste-area');
-            const imagePreviewContainer = document.getElementById('image-preview-container');
-            const imagePreview = document.getElementById('image-preview');
-            const clipboardImageData = document.getElementById('clipboard-image-data');
-            
-            imagePreview.src = '';
-            imagePreviewContainer.style.display = 'none';
-            clipboardImageData.value = '';
-            pasteArea.innerHTML = '여기에 이미지를 붙여넣으세요 (ここに画像を貼り付けてください)';
-            pasteArea.style.color = '#666';
-            console.log("Clipboard image removed");
-        }
-    </script>
 </body>
 </html>
