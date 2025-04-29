@@ -3,26 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장치별 카테고리 비율</title>
+    <title>장비별 트러블 통계</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-<div class="container">
-    <h1>장치별 카테고리별 비율</h1>
+    <div class="container">
+        <h1>장비별 트러블 통계 (装置別トラブル統計)</h1>
 
-    <ul style="list-style:none; padding:0;">
-        {% for d in devices %}
-        <li style="margin:8px 0;">
-            <a href="{{ url_for('stats_pie', device=d) }}" target="_blank">
-                <button style="width:100%;">{{ d }} 원형그래프 열기</button>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+        {% if device_stats %}
+        <table>
+            <thead>
+                <tr>
+                    <th>장치명(装置名)</th>
+                    <th>트러블 건수(件数)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device_name, count in device_stats %}
+                <tr>
+                    <td>{{ device_name }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>등록된 트러블 데이터가 없습니다.</p>
+        {% endif %}
 
-    <a href="{{ url_for('stats') }}">
-        <button>← 통계 표로 돌아가기</button>
-    </a>
-</div>
+        <a href="{{ url_for('index') }}"><button>메인으로 돌아가기</button></a>
+    </div>
 </body>
 </html>

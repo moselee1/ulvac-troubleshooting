@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>트러블 통계</title>
+    <title>Search Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>장비별 트러블 통계</h1>
+        <h1>검색 결과</h1>
 
         <ul>
-            {% for trouble in troubles %}
-                <li>{{ trouble['device_name'] }} - {{ trouble['trouble_text'] }} ({{ trouble['category'] }})</li>
+            {% for result in results %}
+                <li><a href="{{ url_for('trouble_detail', trouble_id=result['id']) }}">{{ result['device_name'] }} - {{ result['trouble_text'] }}</a></li>
             {% endfor %}
         </ul>
     </div>

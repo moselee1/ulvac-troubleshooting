@@ -11,41 +11,50 @@
         <h1>ULVAC Trouble Shooting Program</h1>
 
         <!-- 트러블 등록 폼 -->
-        <form method="POST" action="/submit" id="troubleForm" enctype="multipart/form-data">
-            <label for="occur_date">발생일(発生日)</label>
-            <input type="date" id="occur_date" name="occur_date" required>
+        <form method="POST" action="/" id="troubleForm" enctype="multipart/form-data">
+            <label for="trouble_date">발생일(発生日)</label>
+            <input type="date" id="trouble_date" name="trouble_date" required>
 
-            <label for="device_local">장치 지번(装置指番)</label>
-            <input type="text" id="device_local" name="device_local" placeholder="예) ME24-4504-0" required>
+            <label for="device_code">장치 지번(装置指番)</label>
+            <input type="text" id="device_code" name="device_code" required>
 
             <label for="device_name">장치명(装置名)</label>
-            <input type="text" id="device_name" name="device_name" placeholder="장치명을 입력하세요" required>
+            <input type="text" id="device_name" name="device_name" required>
 
-            <label for="reporter_name">성명(報告者)</label>
-            <input type="text" id="reporter_name" name="reporter_name" required>
+            <label for="user_name">성명(報告者)</label>
+            <input type="text" id="user_name" name="user_name" required>
 
-            <label for="trouble_content">트러블 증상(Trouble内容)</label>
-            <textarea id="trouble_content" name="trouble_content" rows="2" required></textarea>
+            <label for="trouble_text">트러블 증상(Trouble内容)</label>
+            <textarea id="trouble_text" name="trouble_text" rows="2" required></textarea>
 
             <label for="solution">해결 방법(解決方法)</label>
             <textarea id="solution" name="solution" rows="2" required></textarea>
 
             <label for="category">카테고리(カテゴリー)</label>
-            <input type="text" id="category" name="category">
+            <select id="category" name="category">
+                <option value="">선택 안 함(未選択)</option>
+                <option value="전원 또는 제품 불량(電源又は製品不良)">전원 또는 제품 불량(電源又は製品不良)</option>
+                <option value="케이블 배선 불량(Cable配線不良)">케이블 배선 불량(Cable配線不良)</option>
+                <option value="조립 불량(組立不良)">조립 불량(組立不良)</option>
+                <option value="전기설계 부적합(電気設計の不具合)">전기설계 부적합(電気設計の不具合)</option>
+                <option value="기타(その他)">기타(その他)</option>
+            </select>
 
-            <label for="mobile_img">모바일용 사진첨부(携帯用)</label>
-            <input type="text" id="mobile_img" name="mobile_img">
+            <label for="tags">해쉬태그 (쉼표로 구분)</label>
+            <input type="text" id="tags" name="tags">
 
-            <label for="pc_img">노트북용 사진첨부(パソコン用)</label>
-            <input type="text" id="pc_img" name="pc_img">
+            <label for="image">사진 첨부(휴대폰용)</label>
+            <input type="file" id="image" name="image" accept="image/*">
 
-            <label for="hashtag">해시태그(コンマで区分)</label>
-            <input type="text" id="hashtag" name="hashtag">
-
-            <input type="submit" value="등록">
+            <input type="submit" value="등록(登録)">
         </form>
 
-        <a href="{{ url_for('stats') }}"><button>트러블 통계 보기</button></a>
+        <h2>등록된 트러블</h2>
+        <ul>
+            {% for trouble in troubles %}
+                <li><a href="{{ url_for('trouble_detail', trouble_id=trouble['id']) }}">{{ trouble['device_name'] }} - {{ trouble['trouble_text'] }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 </html>
