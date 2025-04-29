@@ -1,84 +1,68 @@
 from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.utils import secure_filename
-import os
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///troubles.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-# 설정
-UPLOAD_FOLDER = 'static/uploads/'
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+class Trouble(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    trouble_date = db.Column(db.String(20), nullable=False)
+    device_code = db.Column(db.String(100), nullable=False)
+    device_name = db.Column(db.String(100), nullable=False)
+    user_name = db.Column(db.String(100), nullable=False)
+    trouble_text = db.Column(db.Text, nullable=False)
+    solution = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    tags = db.Column(db.String(200), nullable=True)
+    image = db.Column(db.String(100), nullable=True)
 
-# 데이터베이스 연결 및 예시 데이터
-troubles = []
-trouble_id = 1
-
-# 파일 확장자 검사
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    global trouble_id
+    if request.method == 'POST':
+        trouble_date = request.form['trouble_date']
+        device_code = request.form['device_code']
+        device_name = request.form['device_name']
+        user_name = request.form['user_name']
+        trouble_text = request.form['trouble_text']
+        solution = request.form['solution']
+        category = request.form['category']
+        tags = request.form['tags']
+        image = request.form['clipboard_image_data']  # 이미지 데이터는 클립보드로 처리
 
-    if request.method == "POST":
-        trouble_date = request.form["trouble_date"]
-        device_code = request.form["device_code"]
-        device_name = request.form["device_name"]
-        user_name = request.form["user_name"]
-        trouble_text = request.form["trouble_text"]
-        solution = request.form["solution"]
-        category = request.form["category"]
-        tags = request.form["tags"]
-        image = request.files.get("image")
+        new_trouble = Trouble(trouble_date=trouble_date, device_code=device_code,
+                              device_name=device_name, user_name=user_name, 
+                              trouble_text=trouble_text, solution=solution, 
+                              category=category, tags=tags, image=image)
 
-        # 파일 업로드 처리
-        if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        else:
-            filename = None
+        db.session.add(new_trouble)
+        db.session.commit()
 
-        # 트러블 데이터 저장
-        new_trouble = {
-            "id": trouble_id,
-            "trouble_date": trouble_date,
-            "device_code": device_code,
-            "device_name": device_name,
-            "user_name": user_name,
-            "trouble_text": trouble_text,
-            "solution": solution,
-            "category": category,
-            "tags": tags,
-            "image": filename
-        }
+        return redirect(url_for('index'))
+    return render_template('index.html')
 
-        troubles.append(new_trouble)
-        trouble_id += 1
-
-        return redirect(url_for("index"))
-
-    return render_template("index.html", troubles=troubles)
-
-@app.route("/trouble/<int:trouble_id>")
-def trouble_detail(trouble_id):
-    trouble = next((t for t in troubles if t["id"] == trouble_id), None)
-    if trouble:
-        return render_template("trouble_detail.html", trouble=trouble)
-    return "Trouble not found", 404
-
-@app.route("/search", methods=["GET", "POST"])
+@app.route('/search', methods=['POST'])
 def search():
-    if request.method == "POST":
-        query = request.form["search_query"]
-        tags = request.form["search_tags"]
-        results = [t for t in troubles if query.lower() in t["trouble_text"].lower() and tags in t["tags"]]
-        return render_template("search_results.html", results=results)
-    return render_template("search.html")
+    search_query = request.form['search_query']
+    search_tags = request.form['search_tags']
+    
+    results = Trouble.query.filter(Trouble.trouble_text.like(f"%{search_query}%"), 
+                                   Trouble.tags.like(f"%{search_tags}%")).all()
 
-@app.route("/stats")
-def stats():
-    return render_template("stats.html", troubles=troubles)
+    return render_template('search_results.html', results=results)
+
+@app.route('/stats_devices')
+def stats_devices():
+    try:
+        # 트러블 통계 로직 추가
+        # 예시로 모든 장치별로 통계 보기 (DB에서 장치별로 통계를 조회)
+        device_stats = db.session.query(Trouble.device_name, db.func.count(Trouble.id).label('count')) \
+                                 .group_by(Trouble.device_name).all()
+        return render_template('stats_devices.html', device_stats=device_stats)
+    except Exception as e:
+        return f"Error: {str(e)}", 500
 
 if __name__ == "__main__":
+    db.create_all()  # 처음 실행 시 DB 테이블 생성
     app.run(debug=True)

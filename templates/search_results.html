@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>트러블 검색 결과</title>
 </head>
 <body>
-    <div class="container">
-        <h1>검색 결과</h1>
-
-        <ul>
-            {% for result in results %}
-                <li><a href="{{ url_for('trouble_detail', trouble_id=result['id']) }}">{{ result['device_name'] }} - {{ result['trouble_text'] }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
+    <h1>트러블 검색 결과</h1>
+    <ul>
+        {% for result in results %}
+        <li>
+            <strong>{{ result.device_name }}</strong><br>
+            {{ result.trouble_text }}<br>
+            <a href="{{ url_for('trouble_detail', trouble_id=result.id) }}">자세히 보기</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/">홈으로 돌아가기</a>
 </body>
 </html>

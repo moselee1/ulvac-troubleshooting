@@ -3,24 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>트러블 상세</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>트러블 상세 보기</title>
 </head>
 <body>
-    <div class="container">
-        <h1>트러블 상세</h1>
-        <p><strong>장치명(装置名):</strong> {{ trouble['device_name'] }}</p>
-        <p><strong>장치 지번(装置指番):</strong> {{ trouble['device_code'] }}</p>
-        <p><strong>성명(報告者):</strong> {{ trouble['user_name'] }}</p>
-        <p><strong>증상(内容):</strong> {{ trouble['trouble_text'] }}</p>
-        <p><strong>해결 방법(解決方法):</strong> {{ trouble['solution'] }}</p>
-        <p><strong>날짜(発生日):</strong> {{ trouble['trouble_date'] }}</p>
-        <p><strong>카테고리(カテゴリー):</strong> {{ trouble['category'] }}</p>
-        <p><strong>해쉬태그(ハッシュタグ):</strong> {{ trouble['tags'] }}</p>
+    <h1>{{ trouble.device_name }} - 트러블 상세</h1>
+    <p><strong>발생일:</strong> {{ trouble.trouble_date }}</p>
+    <p><strong>장치명:</strong> {{ trouble.device_name }}</p>
+    <p><strong>트러블 증상:</strong> {{ trouble.trouble_text }}</p>
+    <p><strong>해결 방법:</strong> {{ trouble.solution }}</p>
+    <p><strong>카테고리:</strong> {{ trouble.category }}</p>
+    <p><strong>해쉬태그:</strong> {{ trouble.tags }}</p>
 
-        {% if trouble['image'] %}
-            <p><strong>사진:</strong><br><img src="{{ url_for('static', filename='uploads/' + trouble['image']) }}" alt="트러블 이미지" style="max-width:500px; max-height:300px;"></p>
-        {% endif %}
-    </div>
+    {% if trouble.image %}
+    <p><strong>이미지:</strong></p>
+    <img src="{{ url_for('static', filename='uploads/' + trouble.image) }}" alt="트러블 이미지" style="max-width:100%; max-height:300px;">
+    {% endif %}
+
+    <a href="/">홈으로 돌아가기</a>
 </body>
 </html>
