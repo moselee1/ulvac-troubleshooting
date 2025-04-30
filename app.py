@@ -1,68 +1,160 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULVAC Trouble Shooting Program</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>ULVAC Trouble Shooting Program</h1>
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///troubles.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+        <!-- 트러블 등록 폼 -->
+        <form method="POST" action="/" id="troubleForm" enctype="multipart/form-data">
+            <label for="trouble_date">발생일(発生日)</label>
+            <input type="date" id="trouble_date" name="trouble_date" required>
+            <label for="device_code">장치 지번(装置指番)</label>
+            <input type="text" id="device_code" name="device_code" placeholder="예) ME24-4504-0" required>
+            <label for="device_name">장치명(装置名)</label>
+            <input type="text" id="device_name" name="device_name" required>
+            <label for="user_name">성명(報告者)</label>
+            <input type="text" id="user_name" name="user_name" required>
+            <label for="trouble_text">트러블 증상(Trouble内容)</label>
+            <textarea id="trouble_text" name="trouble_text" rows="2" required></textarea>
+            <label for="solution">해결 방법(解決方法)</label>
+            <textarea id="solution" name="solution" rows="2" required></textarea>
+            <label for="category">카테고리(カテゴリー)</label>
+            <select id="category" name="category">
+                <option value="">선택 안 함</option>
+                <option value="전원 또는 제품 불량">전원 또는 제품 불량</option>
+                <option value="케이블 배선 불량">케이블 배선 불량</option>
+                <option value="조립 불량">조립 불량</option>
+                <option value="기타">기타</option>
+            </select>
+            <label for="tags">해쉬태그 (쉼표로 구분)</label>
+            <input type="text" id="tags" name="tags">
+            <label for="image">사진 첨부(휴대폰용)</label>
+            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" onchange="checkFile(this)">
+            
+            <!-- 클립보드로 이미지 붙여넣기 -->
+            <div id="paste-container">
+                <label>사진 첨부(노트북용) ※ Cannot upload images over 2mb, use clipboard capture</label>
+                <div id="paste-area" tabindex="0">Window key+shift+S로 캡쳐 후, Ctrl+V로 사진첨부</div>
+                <div id="image-preview-container" style="display:none;">
+                    <img id="image-preview" src="" alt="미리보기" style="max-width:100%; max-height:200px; margin-top:10px;">
+                    <button type="button" id="remove-image" onclick="removeClipboardImage()">이미지 제거</button>
+                </div>
+                <input type="hidden" id="clipboard-image-data" name="clipboard_image_data">
+            </div>
+            
+            <input type="submit" value="등록(登録)">
+        </form>
 
-class Trouble(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    trouble_date = db.Column(db.String(20), nullable=False)
-    device_code = db.Column(db.String(100), nullable=False)
-    device_name = db.Column(db.String(100), nullable=False)
-    user_name = db.Column(db.String(100), nullable=False)
-    trouble_text = db.Column(db.Text, nullable=False)
-    solution = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    tags = db.Column(db.String(200), nullable=True)
-    image = db.Column(db.String(100), nullable=True)
+        <!-- 검색 폼 -->
+        <form method="POST" action="/search">
+            <label for="search_query">트러블 검색(Trouble検索)</label>
+            <input type="text" id="search_query" name="search_query" placeholder="트러블 증상명 검색">
+            <label for="search_tags">해쉬태그</label>
+            <input type="text" id="search_tags" name="search_tags" placeholder="트러블 해시태그 검색">
+            <button type="submit">검색</button>
+        </form>
+    </div>
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        trouble_date = request.form['trouble_date']
-        device_code = request.form['device_code']
-        device_name = request.form['device_name']
-        user_name = request.form['user_name']
-        trouble_text = request.form['trouble_text']
-        solution = request.form['solution']
-        category = request.form['category']
-        tags = request.form['tags']
-        image = request.form['clipboard_image_data']  # 이미지 데이터는 클립보드로 처리
+    <script>
+        // 클립보드 이미지 처리
+        document.addEventListener('DOMContentLoaded', function() {
+            const pasteArea = document.getElementById('paste-area');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const clipboardImageData = document.getElementById('clipboard-image-data');
+            const fileInput = document.getElementById('image');
 
-        new_trouble = Trouble(trouble_date=trouble_date, device_code=device_code,
-                              device_name=device_name, user_name=user_name, 
-                              trouble_text=trouble_text, solution=solution, 
-                              category=category, tags=tags, image=image)
+            pasteArea.addEventListener('click', function() {
+                pasteArea.focus();
+            });
 
-        db.session.add(new_trouble)
-        db.session.commit()
+            document.addEventListener('paste', function(e) {
+                handlePaste(e);
+            });
 
-        return redirect(url_for('index'))
-    return render_template('index.html')
+            pasteArea.addEventListener('paste', function(e) {
+                handlePaste(e);
+            });
 
-@app.route('/search', methods=['POST'])
-def search():
-    search_query = request.form['search_query']
-    search_tags = request.form['search_tags']
-    
-    results = Trouble.query.filter(Trouble.trouble_text.like(f"%{search_query}%"), 
-                                   Trouble.tags.like(f"%{search_tags}%")).all()
+            function handlePaste(e) {
+                const items = e.clipboardData.items;
+                let imageItem = null;
 
-    return render_template('search_results.html', results=results)
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        imageItem = items[i];
+                        break;
+                    }
+                }
 
-@app.route('/stats_devices')
-def stats_devices():
-    try:
-        # 트러블 통계 로직 추가
-        # 예시로 모든 장치별로 통계 보기 (DB에서 장치별로 통계를 조회)
-        device_stats = db.session.query(Trouble.device_name, db.func.count(Trouble.id).label('count')) \
-                                 .group_by(Trouble.device_name).all()
-        return render_template('stats_devices.html', device_stats=device_stats)
-    except Exception as e:
-        return f"Error: {str(e)}", 500
+                if (imageItem) {
+                    e.preventDefault();
+                    const blob = imageItem.getAsFile();
 
-if __name__ == "__main__":
-    db.create_all()  # 처음 실행 시 DB 테이블 생성
-    app.run(debug=True)
+                    compressImage(blob, 20, function(compressedDataUrl) {
+                        imagePreview.src = compressedDataUrl;
+                        imagePreviewContainer.style.display = 'block';
+                        clipboardImageData.value = compressedDataUrl;
+                        pasteArea.innerHTML = '이미지가 붙여넣어졌습니다';
+                    });
+                }
+            }
+
+            function compressImage(blob, maxSizeMB, callback) {
+                const img = new Image();
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    img.src = event.target.result;
+                };
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxBytes = maxSizeMB * 1024 * 1024;
+
+                    if (blob.size > maxBytes) {
+                        const scale = Math.sqrt(maxBytes / blob.size) * 0.9;
+                        width = Math.floor(width * scale);
+                        height = Math.floor(height * scale);
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    let quality = 0.9;
+                    let dataUrl;
+                    do {
+                        dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        quality -= 0.1;
+                    } while (dataUrl.length > maxBytes && quality > 0.1);
+
+                    callback(dataUrl);
+                };
+
+                reader.readAsDataURL(blob);
+            }
+
+            function removeClipboardImage() {
+                const pasteArea = document.getElementById('paste-area');
+                const imagePreviewContainer = document.getElementById('image-preview-container');
+                const imagePreview = document.getElementById('image-preview');
+                const clipboardImageData = document.getElementById('clipboard-image-data');
+                
+                imagePreview.src = '';
+                imagePreviewContainer.style.display = 'none';
+                clipboardImageData.value = '';
+                pasteArea.innerHTML = '여기에 이미지를 붙여넣으세요';
+            }
+        });
+    </script>
+</body>
+</html>
